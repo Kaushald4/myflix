@@ -30,6 +30,7 @@ export default function Player({ id, file }: PlayerProps) {
     const config = {
       id: id,
       file: blobUrl + "#.m3u8",
+      title: "Player",
       hlsconfig: {
         maxBufferLength: 20,
         maxMaxBufferLength: 30,
