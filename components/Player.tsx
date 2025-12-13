@@ -16,20 +16,31 @@ declare global {
 interface PlayerProps {
   id: string;
   file: string;
+  isDirectFile?: boolean;
 }
 
-export default function Player({ id, file }: PlayerProps) {
+export default function Player({
+  id,
+  file,
+  isDirectFile = false,
+}: PlayerProps) {
   // Assuming playerjs.js is in the public folder or provide a valid URL
   //   useScript("/playerjs.js");
 
   useEffect(() => {
-    const blobUrl = URL.createObjectURL(
-      new Blob([file], { type: "application/vnd.apple.mpegurl" })
-    );
+    let blobUrl: string | null = null;
+    let playerFile = file;
+
+    if (!isDirectFile) {
+      blobUrl = URL.createObjectURL(
+        new Blob([file], { type: "application/vnd.apple.mpegurl" })
+      );
+      playerFile = blobUrl + "#.m3u8";
+    }
 
     const config = {
       id: id,
-      file: blobUrl + "#.m3u8",
+      file: playerFile,
       title: "Player",
       hlsconfig: {
         maxBufferLength: 20,
@@ -77,9 +88,11 @@ export default function Player({ id, file }: PlayerProps) {
     }
 
     return () => {
-      URL.revokeObjectURL(blobUrl);
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
     };
-  }, [id, file]);
+  }, [id, file, isDirectFile]);
 
   return <div id={id} className="w-full h-full"></div>;
 }

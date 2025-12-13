@@ -13,18 +13,25 @@ import {
   Calendar,
   Clock,
   ArrowLeft,
-  Share2,
+  Loader2,
   Plus,
+  Check,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { DownloadButton } from "@/components/DownloadButton";
+import { useWatchlistStore } from "@/store/useWatchlistStore";
+import { useRouter } from "next/navigation";
 
 export default function DetailsPage() {
   const params = useParams();
   const { type, id } = params as { type: string; id: string };
   const [meta, setMeta] = useState<Meta | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist } =
+    useWatchlistStore();
+
+  const router = useRouter();
 
   useEffect(() => {
     const loadDetails = async () => {
@@ -81,15 +88,14 @@ export default function DetailsPage() {
 
         {/* Navigation Back */}
         <div className="absolute top-4 left-4 z-20 md:top-8 md:left-8">
-          <Link href={type === "series" ? "/series" : "/movies"}>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10 text-white"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-          </Link>
+          <Button
+            onClick={() => router.back()}
+            variant="ghost"
+            size="icon"
+            className="rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10 text-white"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </Button>
         </div>
 
         {/* Hero Content */}
@@ -158,17 +164,31 @@ export default function DetailsPage() {
                   size="lg"
                   variant="outline"
                   className="rounded-full border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-md"
+                  onClick={() => {
+                    if (isInWatchlist(meta.id)) {
+                      removeFromWatchlist(meta.id);
+                    } else {
+                      addToWatchlist(meta);
+                    }
+                  }}
                 >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Add to List
+                  {isInWatchlist(meta.id) ? (
+                    <>
+                      <Check className="w-5 h-5 mr-2" />
+                      In Watchlist
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-5 h-5 mr-2" />
+                      Add to Watchlist
+                    </>
+                  )}
                 </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md"
-                >
-                  <Share2 className="w-5 h-5" />
-                </Button>
+                <DownloadButton
+                  id={meta.id}
+                  type={meta.type}
+                  title={meta.name}
+                />
               </div>
             </div>
           </div>

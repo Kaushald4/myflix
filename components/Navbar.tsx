@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Tv, List, Film } from "lucide-react";
+import { Tv, List, Film, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -12,6 +12,7 @@ export function Navbar() {
     { href: "/movies", label: "Movies", icon: Film },
     { href: "/series", label: "TV Shows", icon: Tv },
     { href: "/watchlist", label: "Watchlist", icon: List },
+    { href: "/downloads", label: "My Downloads", icon: Download },
   ];
 
   return (

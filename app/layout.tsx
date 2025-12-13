@@ -4,7 +4,9 @@ import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
 import { Navbar } from "@/components/Navbar";
 import { AuthProvider } from "@/components/AuthProvider";
+import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
+import QueryProvider from "@/provider/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +34,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0 md:pt-20`}
       >
         <Script src="/playerjs.js" strategy="afterInteractive" />
-
-        <AuthProvider>
-          <Navbar />
-          {children}
-          <BottomNav />
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <Navbar />
+            {children}
+            <BottomNav />
+            <Toaster />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

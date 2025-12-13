@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Tv, List } from "lucide-react";
+import { Home, Tv, List, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -12,6 +12,7 @@ export function BottomNav() {
     { href: "/movies", label: "Movies", icon: Home },
     { href: "/series", label: "TV Shows", icon: Tv },
     { href: "/watchlist", label: "Watchlist", icon: List },
+    { href: "/downloads", label: "Downloads", icon: Download },
   ];
 
   return (

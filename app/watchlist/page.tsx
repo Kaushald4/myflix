@@ -1,13 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MovieCard } from "@/components/MovieCard";
-import { Meta } from "@/lib/api";
+import { useWatchlistStore } from "@/store/useWatchlistStore";
 
 export default function WatchlistPage() {
-  // Placeholder for watchlist functionality
-  // In a real app, this would fetch from local storage or a backend
-  const [watchlist] = useState<Meta[]>([]);
+  const watchlist = useWatchlistStore((state) => state.watchlist);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">
+          Loading watchlist...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
