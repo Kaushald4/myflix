@@ -3,6 +3,7 @@ import { WatchPlayer } from "@/components/WatchPlayer";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { fetchMetaDetails } from "@/lib/api";
 
 interface WatchPageProps {
   params: Promise<{
@@ -22,12 +23,10 @@ export default async function WatchPage({
   const { type, id } = await params;
   const { season = "1", episode = "1" } = await searchParams;
 
-  const links = await extractStreamLink(
-    id,
-    type,
-    parseInt(season),
-    parseInt(episode)
-  );
+  const [links, meta] = await Promise.all([
+    extractStreamLink(id, type, parseInt(season), parseInt(episode)),
+    fetchMetaDetails(type, id),
+  ]);
 
   const streamLink = links ?? null;
 
@@ -35,6 +34,15 @@ export default async function WatchPage({
   // For movies: id
   // For series: id-sX-eY
   const contentId = type === "movie" ? id : `${id}-s${season}-e${episode}`;
+
+  const metaInfo = {
+    metaId: id,
+    type,
+    title: meta?.name || "Unknown Title",
+    poster: meta?.poster || "",
+    season: type === "series" ? parseInt(season) : undefined,
+    episode: type === "series" ? parseInt(episode) : undefined,
+  };
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
@@ -50,7 +58,12 @@ export default async function WatchPage({
       <div className="flex-1 flex items-center justify-center">
         {streamLink ? (
           <div className="w-full h-full max-w-6xl aspect-video bg-black">
-            <WatchPlayer id="player" file={streamLink} contentId={contentId} />
+            <WatchPlayer
+              id="player"
+              file={streamLink}
+              contentId={contentId}
+              meta={metaInfo}
+            />
           </div>
         ) : (
           <div className="text-white text-center">

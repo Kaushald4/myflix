@@ -3,9 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Trash2, Download, HardDrive } from "lucide-react";
+import { Play, Trash2, Download, HardDrive, Info } from "lucide-react";
 import Player from "@/components/Player";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface DownloadedItem {
   id: string;
@@ -127,6 +128,17 @@ ${tsUrl}
           </div>
         </div>
 
+        <Alert className="mb-8 bg-blue-500/10 border-blue-500/20 text-blue-200">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Storage Tip</AlertTitle>
+          <AlertDescription>
+            Downloads are stored in your browser&apos;s IndexedDB. This can use
+            up significant storage and potentially slow down your browser. We
+            recommend deleting downloads from this list after you&apos;ve saved
+            them to your device to free up space.
+          </AlertDescription>
+        </Alert>
+
         {loading ? (
           <div className="text-center py-12">Loading...</div>
         ) : downloads.length === 0 ? (
@@ -169,6 +181,7 @@ ${tsUrl}
                             id={`player-${item.id}`}
                             file={getPlayableUrl(item)}
                             isDirectFile={item.mimeType === "video/mp4"}
+                            title={item.title}
                           />
                         </DialogContent>
                       </Dialog>

@@ -8,9 +8,17 @@ interface WatchPlayerProps {
   id: string;
   file: string;
   contentId: string;
+  meta: {
+    metaId: string;
+    type: string;
+    title: string;
+    poster: string;
+    season?: number;
+    episode?: number;
+  };
 }
 
-export function WatchPlayer({ id, file, contentId }: WatchPlayerProps) {
+export function WatchPlayer({ id, file, contentId, meta }: WatchPlayerProps) {
   const updateProgress = useWatchHistoryStore((state) => state.updateProgress);
   const getProgress = useWatchHistoryStore((state) => state.getProgress);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -21,14 +29,19 @@ export function WatchPlayer({ id, file, contentId }: WatchPlayerProps) {
 
   const handleTimeUpdate = useCallback(
     (time: number) => {
-      updateProgress(contentId, time);
+      updateProgress(contentId, time, meta);
     },
-    [contentId, updateProgress]
+    [contentId, updateProgress, meta]
   );
 
   if (startTime === null) {
     return <div className="w-full h-full bg-black" />;
   }
+
+  const playerTitle =
+    meta.type === "series" && meta.season && meta.episode
+      ? `${meta.title} - S${meta.season} E${meta.episode}`
+      : meta.title;
 
   return (
     <Player
@@ -36,6 +49,7 @@ export function WatchPlayer({ id, file, contentId }: WatchPlayerProps) {
       file={file}
       onTimeUpdate={handleTimeUpdate}
       startTime={startTime}
+      title={playerTitle}
     />
   );
 }

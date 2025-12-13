@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect } from "react";
@@ -19,6 +20,7 @@ interface PlayerProps {
   isDirectFile?: boolean;
   onTimeUpdate?: (time: number) => void;
   startTime?: number;
+  title?: string;
 }
 
 export default function Player({
@@ -27,6 +29,7 @@ export default function Player({
   isDirectFile = false,
   onTimeUpdate,
   startTime = 0,
+  title = "Player",
 }: PlayerProps) {
   // Assuming playerjs.js is in the public folder or provide a valid URL
   //   useScript("/playerjs.js");
@@ -45,7 +48,7 @@ export default function Player({
     const config = {
       id: id,
       file: playerFile,
-      title: "Player",
+      title: title,
       start: startTime,
       hlsconfig: {
         maxBufferLength: 20,

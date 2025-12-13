@@ -45,6 +45,7 @@ export function DownloadButton({
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
 
+  const abortControllerRef = useRef<AbortController | null>(null);
   const ffmpegRef = useRef(new FFmpeg());
   const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
 
@@ -69,8 +70,9 @@ export function DownloadButton({
   const fetchQualities = async () => {
     setIsLoading(true);
     try {
+      console.log(id, type, season, episode, "hello");
       const m3u8Content = await extractStreamLink(id, type, season, episode);
-
+      console.log(m3u8Content, "ssss");
       if (!m3u8Content || typeof m3u8Content !== "string") {
         toast.error("No download links available");
         setIsOpen(false);
@@ -126,9 +128,13 @@ export function DownloadButton({
     setStatus("Initializing download...");
     setProgress(0);
 
+    // Create new AbortController for this download session
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     try {
       // 1. Fetch the quality playlist to get segments
-      const response = await axios.get(quality.url);
+      const response = await axios.get(quality.url, { signal });
       const content = response.data;
       const lines = content.split("\n");
       const segments: string[] = [];
@@ -159,10 +165,12 @@ export function DownloadButton({
           try {
             const segResponse = await axios.get(segmentUrl, {
               responseType: "blob",
+              signal,
               // Add delay to be nice to the server
             });
             return segResponse.data;
           } catch (e) {
+            if (axios.isCancel(e)) throw e;
             console.error("Segment download failed", e);
             return null;
           }
@@ -183,10 +191,12 @@ export function DownloadButton({
       }
 
       // 3. Combine blobs
+      if (signal.aborted) throw new axios.Cancel("Download cancelled");
       setStatus("Finalizing file...");
       const finalBlob = new Blob(blobs, { type: "video/mp2t" });
 
       // 4. Convert to MP4 using FFmpeg
+      if (signal.aborted) throw new axios.Cancel("Download cancelled");
       setStatus("Converting to MP4 (this may take a moment)...");
       let mp4Blob = finalBlob; // Fallback to TS if conversion fails
       let extension = "ts";
@@ -225,6 +235,7 @@ export function DownloadButton({
       }
 
       // 5. Save to IndexedDB
+      if (signal.aborted) throw new axios.Cancel("Download cancelled");
       // Let's store in IDB for "My Downloads" page
       await saveToDownloads(id, title, mp4Blob, quality.resolution, mimeType);
 
@@ -247,11 +258,22 @@ export function DownloadButton({
       toast.success("Download completed!");
       setIsOpen(false);
     } catch (error) {
-      console.error("Download failed:", error);
-      toast.error("Download failed. Please try again.");
+      if (axios.isCancel(error)) {
+        toast.info("Download cancelled");
+      } else {
+        console.error("Download failed:", error);
+        toast.error("Download failed. Please try again.");
+      }
     } finally {
       setDownloading(false);
       setStatus("");
+      abortControllerRef.current = null;
+    }
+  };
+
+  const cancelDownload = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
   };
 
@@ -299,7 +321,15 @@ export function DownloadButton({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && downloading) {
+          cancelDownload();
+        }
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           size="icon"

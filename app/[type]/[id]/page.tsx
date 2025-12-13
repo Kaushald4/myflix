@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { fetchMetaDetails, Meta } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,6 @@ import Link from "next/link";
 import { DownloadButton } from "@/components/DownloadButton";
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/progress";
 import { useWatchlistStore } from "@/store/useWatchlistStore";
 
 export default function DetailsPage() {
@@ -35,6 +34,58 @@ export default function DetailsPage() {
   const { getProgress } = useWatchHistoryStore();
 
   const router = useRouter();
+
+  const resumeState = useMemo(() => {
+    if (!meta) return null;
+
+    if (type === "movie") {
+      const progress = getProgress(id);
+      if (progress > 0) {
+        return {
+          label: "Resume",
+          href: `/watch/${type}/${id}`,
+          progress,
+          percentage: Math.min((progress / (120 * 60)) * 100, 100), // Assume 2h for movie
+        };
+      }
+    } else if (type === "series" && meta.videos) {
+      // Find the last watched episode
+      let lastWatched = null;
+      let maxIndex = -1;
+
+      for (const video of meta.videos) {
+        const episodeId = `${id}-s${video.season}-e${video.episode}`;
+        const progress = getProgress(episodeId);
+        if (progress > 0) {
+          const index = video.season * 10000 + video.episode;
+          if (index > maxIndex) {
+            maxIndex = index;
+            lastWatched = {
+              ...video,
+              progress,
+              episodeId,
+            };
+          }
+        }
+      }
+
+      if (lastWatched) {
+        return {
+          label: `Resume S${lastWatched.season}:E${lastWatched.episode}`,
+          href: `/watch/${type}/${id}?season=${lastWatched.season}&episode=${lastWatched.episode}`,
+          progress: lastWatched.progress,
+          percentage: Math.min((lastWatched.progress / (25 * 60)) * 100, 100), // Assume 25m for episode
+        };
+      }
+    }
+
+    return {
+      label: "Watch Now",
+      href: `/watch/${type}/${id}`,
+      progress: 0,
+      percentage: 0,
+    };
+  }, [meta, type, id, getProgress]);
 
   useEffect(() => {
     const loadDetails = async () => {
@@ -154,13 +205,23 @@ export default function DetailsPage() {
               </div>
 
               <div className="flex gap-3 pt-4">
-                <Link href={`/watch/${type}/${id}`}>
+                <Link href={resumeState?.href || `/watch/${type}/${id}`}>
                   <Button
                     size="lg"
-                    className="bg-primary hover:bg-primary/80 text-primary-foreground rounded-full px-8 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
+                    className="relative overflow-hidden bg-primary hover:bg-primary/80 text-primary-foreground rounded-full px-8 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
                   >
-                    <Play className="w-5 h-5 mr-2 fill-current" />
-                    Watch Now
+                    <div className="relative z-10 flex items-center">
+                      <Play className="w-5 h-5 mr-2 fill-current" />
+                      {resumeState?.label || "Watch Now"}
+                    </div>
+                    {resumeState && resumeState.progress > 0 && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
+                        <div
+                          className="h-full bg-white"
+                          style={{ width: `${resumeState.percentage}%` }}
+                        />
+                      </div>
+                    )}
                   </Button>
                 </Link>
                 <Button
@@ -395,7 +456,7 @@ export default function DetailsPage() {
                                     </Button>
                                   </Link>
                                   <DownloadButton
-                                    id={episode.id}
+                                    id={episode.id?.split(":")?.[0]}
                                     type="series"
                                     title={`${meta.name} - S${season}E${episode.episode}`}
                                     // size="icon"

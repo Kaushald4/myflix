@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
@@ -19,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MyFlix - Stream Your Favorite Movies and TV Shows",
-  description: "Bookmark and stream your favorite movies and TV shows.",
+  title: "MyFlix - Discover Your Favorite Movies and TV Shows",
+  description: "Bookmark and explore your favorite movies and TV shows.",
 };
 
 export default function RootLayout({
@@ -38,6 +39,7 @@ export default function RootLayout({
           <AuthProvider>
             <Navbar />
             {children}
+            <Footer />
             <BottomNav />
             <Toaster />
           </AuthProvider>

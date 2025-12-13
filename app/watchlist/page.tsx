@@ -37,7 +37,7 @@ export default function WatchlistPage() {
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 neon-text bg-clip-text text-transparent bg-linear-to-r from-white to-white/50 uppercase">
             Watchlist
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto glass p-4 rounded-full">
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto glass p-4 rounded-full">
             Your personal collection of must-watch content.
           </p>
         </header>
