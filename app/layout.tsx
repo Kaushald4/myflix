@@ -34,6 +34,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 pt-16 md:pb-0 md:pt-20`}
       >
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="ae9e5cfa-8984-430c-a70e-7548eea5f54a"
+        ></script>
         <Script src="/playerjs.js" strategy="afterInteractive" />
         <QueryProvider>
           <AuthProvider>

@@ -2,15 +2,18 @@
 
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { Button } from "@/components/ui/button";
-import { Play, ChevronRight, Film, Tv } from "lucide-react";
+import { Play, ChevronRight, Film, Tv, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { history } = useWatchHistoryStore();
   const [mounted, setMounted] = useState(false);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -100,15 +103,22 @@ export default function Home() {
                             <Play className="w-12 h-12 opacity-20" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <Link href={href}>
-                            <Button
-                              size="icon"
-                              className="rounded-full bg-primary hover:bg-primary/90"
-                            >
+                        <div className="absolute inset-0 bg-black/40 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Button
+                            size="icon"
+                            className="rounded-full bg-primary hover:bg-primary/90"
+                            onClick={() => {
+                              setLoadingId(item.id);
+                              router.push(href);
+                            }}
+                            disabled={loadingId === item.id}
+                          >
+                            {loadingId === item.id ? (
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
                               <Play className="w-5 h-5 fill-current" />
-                            </Button>
-                          </Link>
+                            )}
+                          </Button>
                         </div>
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
                           <div
