@@ -1,5 +1,5 @@
 import { extractStreamLink } from "@/lib/streamlib/extract";
-import Player from "@/components/Player";
+import { WatchPlayer } from "@/components/WatchPlayer";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,11 @@ export default async function WatchPage({
 
   const streamLink = links ?? null;
 
+  // Construct a unique ID for tracking progress
+  // For movies: id
+  // For series: id-sX-eY
+  const contentId = type === "movie" ? id : `${id}-s${season}-e${episode}`;
+
   return (
     <div className="min-h-screen bg-black flex flex-col">
       <div className="p-4 absolute top-0 left-0 z-10">
@@ -45,7 +50,7 @@ export default async function WatchPage({
       <div className="flex-1 flex items-center justify-center">
         {streamLink ? (
           <div className="w-full h-full max-w-6xl aspect-video bg-black">
-            <Player id="player" file={streamLink} />
+            <WatchPlayer id="player" file={streamLink} contentId={contentId} />
           </div>
         ) : (
           <div className="text-white text-center">

@@ -20,8 +20,10 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { DownloadButton } from "@/components/DownloadButton";
-import { useWatchlistStore } from "@/store/useWatchlistStore";
+import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
+import { useWatchlistStore } from "@/store/useWatchlistStore";
 
 export default function DetailsPage() {
   const params = useParams();
@@ -30,6 +32,7 @@ export default function DetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } =
     useWatchlistStore();
+  const { getProgress } = useWatchHistoryStore();
 
   const router = useRouter();
 
@@ -296,67 +299,112 @@ export default function DetailsPage() {
                       {meta.videos
                         ?.filter((v) => v.season === season)
                         .sort((a, b) => a.episode - b.episode)
-                        .map((episode) => (
-                          <div
-                            key={episode.id}
-                            className="bg-card/30 border border-white/5 rounded-lg p-4 flex flex-col sm:flex-row gap-4 hover:bg-card/50 transition-colors"
-                          >
-                            <Link
-                              href={`/watch/${type}/${id}?season=${season}&episode=${episode.episode}`}
-                              className="relative w-full sm:w-40 aspect-video rounded-md overflow-hidden bg-black/50 shrink-0 group/episode"
+                        .map((episode) => {
+                          // Construct unique ID for episode progress tracking
+                          const episodeId = `${id}-s${season}-e${episode.episode}`;
+                          const progress = getProgress(episodeId);
+                          const progressPercentage = progress
+                            ? Math.min((progress / (25 * 60)) * 100, 100) // Assuming 25 mins avg duration if unknown
+                            : 0;
+
+                          return (
+                            <div
+                              key={episode.id}
+                              className="bg-card/30 border border-white/5 rounded-lg p-4 flex flex-col sm:flex-row gap-4 hover:bg-card/50 transition-colors group/card"
                             >
-                              {episode.thumbnail ? (
-                                <Image
-                                  src={episode.thumbnail}
-                                  alt={
-                                    episode.name || `Episode ${episode.episode}`
-                                  }
-                                  fill
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="flex items-center justify-center h-full text-muted-foreground">
-                                  <Play className="w-8 h-8 opacity-50" />
+                              <Link
+                                href={`/watch/${type}/${id}?season=${season}&episode=${episode.episode}`}
+                                className="relative w-full sm:w-40 aspect-video rounded-md overflow-hidden bg-black/50 shrink-0 group/episode"
+                              >
+                                {episode.thumbnail ? (
+                                  <Image
+                                    src={episode.thumbnail}
+                                    alt={
+                                      episode.name ||
+                                      `Episode ${episode.episode}`
+                                    }
+                                    fill
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                                    <Play className="w-8 h-8 opacity-50" />
+                                  </div>
+                                )}
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/episode:opacity-100 transition-opacity flex items-center justify-center">
+                                  <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center group-hover/episode:scale-110 transition-transform">
+                                    <Play className="w-5 h-5 text-white fill-current" />
+                                  </div>
                                 </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/episode:opacity-100 transition-opacity flex items-center justify-center">
-                                <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center group-hover/episode:scale-110 transition-transform">
-                                  <Play className="w-5 h-5 text-white fill-current" />
-                                </div>
-                              </div>
-                            </Link>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2 mb-2">
+                                {progress > 0 && (
+                                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
+                                    <div
+                                      className="h-full bg-primary"
+                                      style={{
+                                        width: `${progressPercentage}%`,
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </Link>
+                              <div className="flex-1 min-w-0 flex flex-col justify-between">
                                 <div>
-                                  <h4 className="font-bold text-lg truncate text-white">
-                                    {episode.episode}.{" "}
-                                    {episode.name ||
-                                      `Episode ${episode.episode}`}
-                                  </h4>
-                                  <p className="text-sm text-muted-foreground">
-                                    {new Date(
-                                      episode.released
-                                    ).toLocaleDateString()}
+                                  <div className="flex items-start justify-between gap-2 mb-2">
+                                    <div>
+                                      <h4 className="font-bold text-lg truncate text-foreground">
+                                        {episode.episode}.{" "}
+                                        {episode.name ||
+                                          `Episode ${episode.episode}`}
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground">
+                                        {new Date(
+                                          episode.released
+                                        ).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                    {episode.rating > 0 && (
+                                      <Badge
+                                        variant="outline"
+                                        className="border-yellow-500/50 text-yellow-500"
+                                      >
+                                        <Star className="w-3 h-3 mr-1 fill-current" />
+                                        {episode.rating.toFixed(1)}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                    {episode.overview ||
+                                      episode.description ||
+                                      "No description available."}
                                   </p>
                                 </div>
-                                {episode.rating > 0 && (
-                                  <Badge
-                                    variant="outline"
-                                    className="border-yellow-500/50 text-yellow-500"
+
+                                <div className="flex items-center gap-3 mt-auto opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                  <Link
+                                    href={`/watch/${type}/${id}?season=${season}&episode=${episode.episode}`}
+                                    className="flex-1"
                                   >
-                                    <Star className="w-3 h-3 mr-1 fill-current" />
-                                    {episode.rating.toFixed(1)}
-                                  </Badge>
-                                )}
+                                    <Button
+                                      size="sm"
+                                      className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20"
+                                    >
+                                      <Play className="w-4 h-4 mr-2 fill-current" />
+                                      {progress > 0
+                                        ? "Resume Episode"
+                                        : "Play Episode"}
+                                    </Button>
+                                  </Link>
+                                  <DownloadButton
+                                    id={episode.id}
+                                    type="series"
+                                    title={`${meta.name} - S${season}E${episode.episode}`}
+                                    // size="icon"
+                                  />
+                                </div>
                               </div>
-                              <p className="text-sm text-gray-400 line-clamp-2">
-                                {episode.overview ||
-                                  episode.description ||
-                                  "No description available."}
-                              </p>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                     </TabsContent>
                   ))}
                 </Tabs>

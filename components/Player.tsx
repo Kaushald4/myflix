@@ -17,12 +17,16 @@ interface PlayerProps {
   id: string;
   file: string;
   isDirectFile?: boolean;
+  onTimeUpdate?: (time: number) => void;
+  startTime?: number;
 }
 
 export default function Player({
   id,
   file,
   isDirectFile = false,
+  onTimeUpdate,
+  startTime = 0,
 }: PlayerProps) {
   // Assuming playerjs.js is in the public folder or provide a valid URL
   //   useScript("/playerjs.js");
@@ -42,6 +46,7 @@ export default function Player({
       id: id,
       file: playerFile,
       title: "Player",
+      start: startTime,
       hlsconfig: {
         maxBufferLength: 20,
         maxMaxBufferLength: 30,
@@ -58,8 +63,10 @@ export default function Player({
       },
     };
 
+    let playerInstance: any = null;
+
     if (window.Playerjs) {
-      new window.Playerjs(config);
+      playerInstance = new window.Playerjs(config);
     } else {
       if (!window.pjscnfgs) {
         window.pjscnfgs = {};
@@ -67,15 +74,7 @@ export default function Player({
       window.pjscnfgs[config.id] = config;
     }
 
-    // Define PlayerjsAsync if it doesn't exist (though the script should define it usually,
-    // but the user snippet defines it manually in the example?)
-    // The user snippet has:
-    // window.PlayerjsAsync = function () { ... }
-    // This usually comes from the playerjs library itself, but the user provided it as part of the code.
-    // Let's include it to be safe, or rely on the loaded script.
-    // Actually, the user snippet shows `Player.js` exporting `Player` and defining `window.PlayerjsAsync`.
-    // So I should probably include it.
-
+    // Define PlayerjsAsync if it doesn't exist
     if (!window.PlayerjsAsync) {
       window.PlayerjsAsync = function () {
         if (window.pjscnfgs) {
@@ -87,12 +86,46 @@ export default function Player({
       };
     }
 
+    // Polling for time updates
+    let interval: NodeJS.Timeout;
+    if (onTimeUpdate) {
+      interval = setInterval(() => {
+        try {
+          // Try to get the player instance if it wasn't created immediately
+          if (!playerInstance && window.Playerjs) {
+            // This is tricky because we don't have a reference if created via Async
+            // But PlayerJS usually puts the API on the element or we can try to find it
+            // For now, let's assume if we created it, we have it.
+            // If created via Async, we might miss it.
+            // However, PlayerJS usually exposes `window.Playerjs` instances if we track them.
+            // A common pattern is `document.getElementById(id).api("time")` if the library supports it.
+            // Let's try accessing via the element ID which PlayerJS often attaches to.
+            const element: any = document.getElementById(id);
+            if (element && element.api) {
+              const currentTime = element.api("time");
+              if (typeof currentTime === "number") {
+                onTimeUpdate(currentTime);
+              }
+            }
+          } else if (playerInstance && playerInstance.api) {
+            const currentTime = playerInstance.api("time");
+            if (typeof currentTime === "number") {
+              onTimeUpdate(currentTime);
+            }
+          }
+        } catch (e) {
+          // Ignore errors
+        }
+      }, 5000);
+    }
+
     return () => {
+      if (interval) clearInterval(interval);
       if (blobUrl) {
         URL.revokeObjectURL(blobUrl);
       }
     };
-  }, [id, file, isDirectFile]);
+  }, [id, file, isDirectFile, onTimeUpdate, startTime]);
 
   return <div id={id} className="w-full h-full"></div>;
 }
