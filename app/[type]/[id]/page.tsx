@@ -32,8 +32,20 @@ export default function DetailsPage() {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } =
     useWatchlistStore();
   const { getProgress } = useWatchHistoryStore();
+  const [isPlayLoading, setIsPlayLoading] = useState(false);
+  const [loadingEpisodeId, setLoadingEpisodeId] = useState<string | null>(null);
 
   const router = useRouter();
+
+  const handlePlayClick = (href: string) => {
+    setIsPlayLoading(true);
+    router.push(href);
+  };
+
+  const handleEpisodePlayClick = (href: string, episodeId: string) => {
+    setLoadingEpisodeId(episodeId);
+    router.push(href);
+  };
 
   const resumeState = useMemo(() => {
     if (!meta) return null;
@@ -205,25 +217,31 @@ export default function DetailsPage() {
               </div>
 
               <div className="flex gap-3 pt-4">
-                <Link href={resumeState?.href || `/watch/${type}/${id}`}>
-                  <Button
-                    size="lg"
-                    className="relative overflow-hidden bg-primary hover:bg-primary/80 text-primary-foreground rounded-full px-8 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
-                  >
-                    <div className="relative z-10 flex items-center">
+                <Button
+                  size="lg"
+                  className="relative overflow-hidden bg-primary hover:bg-primary/80 text-primary-foreground rounded-full px-8 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
+                  onClick={() =>
+                    handlePlayClick(resumeState?.href || `/watch/${type}/${id}`)
+                  }
+                  disabled={isPlayLoading}
+                >
+                  <div className="relative z-10 flex items-center">
+                    {isPlayLoading ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
                       <Play className="w-5 h-5 mr-2 fill-current" />
-                      {resumeState?.label || "Watch Now"}
-                    </div>
-                    {resumeState && resumeState.progress > 0 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
-                        <div
-                          className="h-full bg-white"
-                          style={{ width: `${resumeState.percentage}%` }}
-                        />
-                      </div>
                     )}
-                  </Button>
-                </Link>
+                    {resumeState?.label || "Watch Now"}
+                  </div>
+                  {resumeState && resumeState.progress > 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
+                      <div
+                        className="h-full bg-white"
+                        style={{ width: `${resumeState.percentage}%` }}
+                      />
+                    </div>
+                  )}
+                </Button>
                 <Button
                   size="lg"
                   variant="outline"
@@ -440,21 +458,27 @@ export default function DetailsPage() {
                                   </p>
                                 </div>
 
-                                <div className="flex items-center gap-3 mt-auto opacity-0 group-hover/card:opacity-100 transition-opacity">
-                                  <Link
-                                    href={`/watch/${type}/${id}?season=${season}&episode=${episode.episode}`}
-                                    className="flex-1"
+                                <div className="flex items-center gap-3 mt-auto opacity-100 md:opacity-0 md:group-hover/card:opacity-100 transition-opacity">
+                                  <Button
+                                    size="sm"
+                                    className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20"
+                                    onClick={() =>
+                                      handleEpisodePlayClick(
+                                        `/watch/${type}/${id}?season=${season}&episode=${episode.episode}`,
+                                        episodeId
+                                      )
+                                    }
+                                    disabled={loadingEpisodeId === episodeId}
                                   >
-                                    <Button
-                                      size="sm"
-                                      className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20"
-                                    >
+                                    {loadingEpisodeId === episodeId ? (
+                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : (
                                       <Play className="w-4 h-4 mr-2 fill-current" />
-                                      {progress > 0
-                                        ? "Resume Episode"
-                                        : "Play Episode"}
-                                    </Button>
-                                  </Link>
+                                    )}
+                                    {progress > 0
+                                      ? "Resume Episode"
+                                      : "Play Episode"}
+                                  </Button>
                                   <DownloadButton
                                     id={episode.id?.split(":")?.[0]}
                                     type="series"
