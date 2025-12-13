@@ -3,14 +3,16 @@
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Trash2, Clock } from "lucide-react";
+import { Play, Trash2, Clock, Download, Upload } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { toast } from "sonner";
 
 export default function HistoryPage() {
-  const { history, removeFromHistory } = useWatchHistoryStore();
+  const { history, removeFromHistory, importHistory } = useWatchHistoryStore();
   const [mounted, setMounted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -23,16 +25,84 @@ export default function HistoryPage() {
     (a, b) => b.lastWatchedAt - a.lastWatchedAt
   );
 
+  const handleExport = () => {
+    try {
+      const dataStr = JSON.stringify(history, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `myflix_history_${
+        new Date().toISOString().split("T")[0]
+      }.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("History exported successfully");
+    } catch (error) {
+      console.error("Export failed", error);
+      toast.error("Failed to export history");
+    }
+  };
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const parsed = JSON.parse(content);
+        importHistory(parsed);
+        toast.success("History imported successfully");
+      } catch (error) {
+        console.error("Import failed", error);
+        toast.error("Failed to import history. Invalid file format.");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 pt-24 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 rounded-full bg-primary/20">
-            <Clock className="w-8 h-8 text-primary" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-full bg-primary/20">
+              <Clock className="w-8 h-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold">Watch History</h1>
+              <p className="text-muted-foreground">
+                Continue where you left off
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold">Watch History</h1>
-            <p className="text-muted-foreground">Continue where you left off</p>
+          <div className="flex gap-2 w-full md:w-auto">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImport}
+              accept=".json"
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex-1 md:flex-none"
+            >
+              <Upload className="w-4 h-4 mr-2" /> Import
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleExport}
+              className="flex-1 md:flex-none"
+            >
+              <Download className="w-4 h-4 mr-2" /> Export
+            </Button>
           </div>
         </div>
 
@@ -41,7 +111,7 @@ export default function HistoryPage() {
             <p>No watch history yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {historyItems.map((item) => {
               const progressPercentage = Math.min(
                 (item.timestamp /

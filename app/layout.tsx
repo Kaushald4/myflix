@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0 md:pt-20`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 pt-16 md:pb-0 md:pt-20`}
       >
         <Script src="/playerjs.js" strategy="afterInteractive" />
         <QueryProvider>

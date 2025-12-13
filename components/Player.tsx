@@ -5,11 +5,8 @@ import { useEffect } from "react";
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Playerjs: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pjscnfgs: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     PlayerjsAsync: any;
   }
 }
@@ -31,9 +28,6 @@ export default function Player({
   startTime = 0,
   title = "Player",
 }: PlayerProps) {
-  // Assuming playerjs.js is in the public folder or provide a valid URL
-  //   useScript("/playerjs.js");
-
   useEffect(() => {
     let blobUrl: string | null = null;
     let playerFile = file;
@@ -53,7 +47,6 @@ export default function Player({
       hlsconfig: {
         maxBufferLength: 20,
         maxMaxBufferLength: 30,
-        // Limit how many segments can be downloaded at once
         maxLoadingDelay: 4,
         fragLoadingMaxRetry: 2,
         // Start with a lower quality to reduce initial request size
@@ -77,7 +70,6 @@ export default function Player({
       window.pjscnfgs[config.id] = config;
     }
 
-    // Define PlayerjsAsync if it doesn't exist
     if (!window.PlayerjsAsync) {
       window.PlayerjsAsync = function () {
         if (window.pjscnfgs) {
@@ -117,7 +109,7 @@ export default function Player({
             }
           }
         } catch (e) {
-          // Ignore errors
+          console.log(e);
         }
       }, 5000);
     }

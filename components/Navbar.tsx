@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Tv, List, Film, Download } from "lucide-react";
+import { Tv, List, Film, Download, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -13,12 +14,13 @@ export function Navbar() {
     { href: "/series", label: "TV Shows", icon: Tv },
     { href: "/watchlist", label: "Watchlist", icon: List },
     { href: "/downloads", label: "My Downloads", icon: Download },
+    { href: "/history", label: "History", icon: Clock },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 hidden md:block">
+    <nav className="fixed top-0 left-0 right-0 z-50 block">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-16 md:h-20 items-center justify-between">
           {/* Logo */}
           <div className="shrink-0">
             <Link
@@ -51,6 +53,24 @@ export function Navbar() {
                 );
               })}
             </div>
+          </div>
+
+          {/* Mobile History Icon */}
+          <div className="md:hidden">
+            <Link href="/history">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "rounded-full",
+                  pathname === "/history"
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground"
+                )}
+              >
+                <Clock className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

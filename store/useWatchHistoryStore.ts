@@ -23,6 +23,7 @@ interface WatchHistoryState {
   ) => void;
   getProgress: (id: string) => number;
   removeFromHistory: (id: string) => void;
+  importHistory: (history: Record<string, HistoryItem>) => void;
 }
 
 export const useWatchHistoryStore = create<WatchHistoryState>()(
@@ -56,6 +57,11 @@ export const useWatchHistoryStore = create<WatchHistoryState>()(
           delete newHistory[id];
           return { history: newHistory };
         });
+      },
+      importHistory: (newHistory) => {
+        set((state) => ({
+          history: { ...state.history, ...newHistory },
+        }));
       },
     }),
     {
