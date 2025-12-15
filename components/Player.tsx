@@ -44,19 +44,19 @@ export default function Player({
       file: playerFile,
       title: title,
       start: startTime,
-      hlsconfig: {
-        maxBufferLength: 20,
-        maxMaxBufferLength: 30,
-        maxLoadingDelay: 4,
-        fragLoadingMaxRetry: 2,
-        // Start with a lower quality to reduce initial request size
-        // startLevel: 0,
-        // xhrSetup: function (xhr: XMLHttpRequest) {
-        //   //   xhr.withCredentials = false;
-        //   //   xhr.setRequestHeader("Origin", "tmstr4.thrumbleandjaxon.com");
-        //   //   xhr.setRequestHeader("Authorization", file);
-        // },
-      },
+      // hlsconfig: {
+      //   maxBufferLength: 20,
+      //   maxMaxBufferLength: 30,
+      //   maxLoadingDelay: 4,
+      //   fragLoadingMaxRetry: 2,
+      //   // Start with a lower quality to reduce initial request size
+      //   // startLevel: 0,
+      //   // xhrSetup: function (xhr: XMLHttpRequest) {
+      //   //   //   xhr.withCredentials = false;
+      //   //   //   xhr.setRequestHeader("Origin", "tmstr4.thrumbleandjaxon.com");
+      //   //   //   xhr.setRequestHeader("Authorization", file);
+      //   // },
+      // },
     };
 
     let playerInstance: any = null;
