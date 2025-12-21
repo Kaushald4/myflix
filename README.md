@@ -4,7 +4,7 @@ A modern web application for streaming movies and TV series, built with Next.js.
 
 ## Disclaimer
 
-**Important Legal Notice**: This application does not host any video content. It acts as a client-side scraper and proxy for publicly available streaming sources. All content is sourced from third-party websites. Users are responsible for ensuring compliance with local laws and copyright regulations when using this application. The developers are not liable for any misuse or infringement.
+**Important Legal Notice**: This application does not host any video content. It acts as a client-side scraper and proxy for publicly available streaming sources. All content is sourced from third-party websites. Users are responsible for ensuring compliance with local laws and copyright regulations when using this application.
 
 ## Features
 
