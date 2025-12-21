@@ -1,4 +1,6 @@
-# StreamFlix Web
+# MyyFlix Web
+
+![alt text](./myyflix.png "MyyFlix")
 
 A modern web application for streaming movies and TV series, built with Next.js. This project provides a user-friendly interface to browse, watch, and manage your favorite content with features like watchlists, watch history, and downloads.
 
@@ -45,7 +47,7 @@ A modern web application for streaming movies and TV series, built with Next.js.
 
    ```bash
    git clone <repository-url>
-   cd streamflix-web
+   cd myyflix-web
    ```
 
 2. Install dependencies:
@@ -109,7 +111,7 @@ npm run lint
 ## Project Structure
 
 ```
-streamflix-web/
+myyflix-web/
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
 │   │   ├── proxy-stream/  # Streaming proxy endpoint
