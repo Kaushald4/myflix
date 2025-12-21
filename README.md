@@ -186,10 +186,6 @@ The application uses Zustand for state management with the following stores:
 4. Push to the branch: `git push origin feature/your-feature`
 5. Submit a pull request
 
-## License
-
-This project is private and proprietary.
-
 ## Acknowledgments
 
 - Built with [Next.js](https://nextjs.org)
