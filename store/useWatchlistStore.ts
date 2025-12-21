@@ -29,8 +29,8 @@ export const useWatchlistStore = create<WatchlistState>()(
       },
     }),
     {
-      name: "watchlist-storage", // name of the item in the storage (must be unique)
-      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+      name: "watchlist-storage",
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

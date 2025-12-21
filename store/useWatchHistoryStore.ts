@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface HistoryItem {
-  id: string; // contentId (unique for episode/movie)
-  metaId: string; // original id (imdb_id)
+  id: string;
+  metaId: string;
   type: string;
   title: string;
   poster: string;
@@ -65,7 +65,7 @@ export const useWatchHistoryStore = create<WatchHistoryState>()(
       },
     }),
     {
-      name: "watch-history-storage-v2", // Changed name to reset storage and avoid conflicts
+      name: "watch-history-storage-v2",
       storage: createJSONStorage(() => localStorage),
     }
   )

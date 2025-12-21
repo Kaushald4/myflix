@@ -4,11 +4,14 @@ A modern web application for streaming movies and TV series, built with Next.js.
 
 ## Disclaimer
 
-**Important Legal Notice**: This application does not host any video content. It acts as a client-side scraper and proxy for publicly available streaming sources. All content is sourced from third-party websites. Users are responsible for ensuring compliance with local laws and copyright regulations when using this application.
+**Important Legal Notice**: This application does not host any video content. It acts as a client-side scraper and proxy for publicly available streaming sources. All content is sourced from third-party websites. Users are responsible for ensuring compliance with local laws and copyright regulations when using this application. The developers are not liable for any misuse or infringement.
+
+**Educational Purpose**: This project was developed from a security engineering perspective, involving reverse engineering of various streaming websites to identify and extract actual stream links. It serves as a learning tool to understand web scraping, API interactions, video streaming protocols (like HLS), and security concepts in modern web applications. This is intended solely for educational and research purposes to demonstrate technical capabilities, not for commercial use or content distribution.
 
 ## Features
 
 - **Browse Content**: Discover movies and TV series with a clean catalog interface
+- **Search**: Find movies and series using IMDb IDs or other search criteria
 - **Streaming Player**: Integrated video player for seamless content playback
 - **Watchlist**: Save movies and series for later viewing
 - **Watch History**: Track your viewing progress and history
