@@ -64,9 +64,15 @@ A modern web application for streaming movies and TV series, built with Next.js.
 
 3. Set up environment variables (if needed):
    Create a `.env.local` file in the root directory and add any required environment variables. For example:
+
    ```
    NEXT_PUBLIC_WEB_URL=http://localhost:3000
    ```
+
+4. Authentication Setup:
+   The application includes basic authentication. Use the following default credentials for testing:
+   - **Username**: nouser
+   - **Password**: nopass
 
 ## Development
 
