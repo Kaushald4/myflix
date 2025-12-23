@@ -131,9 +131,9 @@ export default function DetailsPage() {
   }
 
   const seasons = meta.videos
-    ? Array.from(new Set(meta.videos.map((v) => v.season))).sort(
-        (a, b) => a - b
-      )
+    ? Array.from(new Set(meta.videos.map((v) => v.season)))
+        .sort((a, b) => a - b)
+        .filter((s) => s !== 0)
     : [];
 
   return (
@@ -441,15 +441,17 @@ export default function DetailsPage() {
                                         ).toLocaleDateString()}
                                       </p>
                                     </div>
-                                    {episode.rating > 0 && (
+                                    {/* {episode && episode.rating > 0 && (
                                       <Badge
                                         variant="outline"
                                         className="border-yellow-500/50 text-yellow-500"
                                       >
                                         <Star className="w-3 h-3 mr-1 fill-current" />
-                                        {episode.rating.toFixed(1)}
+                                        {episode &&
+                                          episode?.rating &&
+                                          Number(episode?.rating).toFixed(1)}
                                       </Badge>
-                                    )}
+                                    )} */}
                                   </div>
                                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                                     {episode.overview ||
