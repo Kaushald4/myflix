@@ -55,7 +55,6 @@ export default function Player({
       file: playerFile,
       title: title,
       start: startTime,
-      ratio: "16:9",
     };
 
     if (subtitle) {
