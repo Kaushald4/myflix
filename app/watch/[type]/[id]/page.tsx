@@ -121,7 +121,7 @@ export default async function WatchPage({
               <Link href={`/${type}/${id}`} className="mt-6">
                 <Button
                   variant="outline"
-                  className="border-white/20 dark:border-white/20 text-white dark:text-white hover:bg-white/10 dark:hover:bg-white/10"
+                  className="border-white/20 dark:border-white/20 text-white dark:text-white dark:hover:bg-white/10 bg-primary/20 hover:text-white hover:bg-primary/50"
                 >
                   Back to Details
                 </Button>
