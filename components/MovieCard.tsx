@@ -20,7 +20,7 @@ export function MovieCard({ movie }: MovieCardProps) {
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
         />
         {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+        <div className="absolute inset-0 bg-black/60 dark:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
           <div className="flex gap-2 mb-2">
             <button
               onClick={(e) => {
@@ -31,7 +31,7 @@ export function MovieCard({ movie }: MovieCardProps) {
               <Play className="w-4 h-4 fill-current" />
             </button>
             <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-              <Plus className="w-4 h-4 text-white" />
+              <Plus className="w-4 h-4" />
             </button>
           </div>
           <div className="flex items-center gap-2 text-xs">
@@ -69,7 +69,7 @@ export function MovieCard({ movie }: MovieCardProps) {
               <Badge
                 key={g}
                 variant="secondary"
-                className="bg-white/10 text-foreground border-white/10 text-xs px-2 py-0"
+                className="bg-white/10 dark:bg-white/10 text-foreground border-white/10 dark:border-white/10 text-xs px-2 py-0"
               >
                 {g}
               </Badge>

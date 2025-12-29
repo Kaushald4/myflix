@@ -45,24 +45,25 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Modern Light Mode - Clean & Minimal */
+  --background: oklch(0.98 0.005 250);
+  --foreground: oklch(0.15 0.01 250);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.15 0.01 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.15 0.01 250);
+  --primary: oklch(52.022% 0.25153 263.942);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.01 250);
+  --secondary-foreground: oklch(0.15 0.01 250);
+  --muted: oklch(0.96 0.008 250);
+  --muted-foreground: oklch(0.50 0.01 250);
+  --accent: oklch(0.92 0.04 280);
+  --accent-foreground: oklch(0.15 0.01 250);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.90 0.01 250);
+  --input: oklch(0.90 0.01 250);
+  --ring: oklch(0.45 0.22 280);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(30.791% 0.20821 266.616);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -80,41 +81,41 @@
 
 .dark {
   /* Cyberpunk / Liquid Glass Palette */
-  --background: oklch(0.1 0.05 260); /* Deep dark blue/purple */
+  --background: oklch(0.1 0.05 260);
   --foreground: oklch(0.985 0 0);
-
+  
   /* Glassy Cards */
   --card: oklch(0.15 0.05 260 / 0.6);
   --card-foreground: oklch(0.985 0 0);
-
+  
   --popover: oklch(0.15 0.05 260 / 0.9);
   --popover-foreground: oklch(0.985 0 0);
-
+  
   /* Neon Accents */
-  --primary: oklch(52.022% 0.25153 263.942); /* Neon Pink/Magenta */
+  --primary: oklch(52.022% 0.25153 263.942);
   --primary-foreground: oklch(0.985 0 0);
-
+  
   --secondary: oklch(0.25 0.1 260);
   --secondary-foreground: oklch(0.985 0 0);
-
+  
   --muted: oklch(0.2 0.05 260);
   --muted-foreground: oklch(0.7 0.05 260);
-
-  --accent: oklch(27.752% 0.06931 252.387); /* Cyan/Teal */
+  
+  --accent: oklch(27.752% 0.06931 252.387);
   --accent-foreground: oklch(0.1 0.05 260);
-
+  
   --destructive: oklch(0.6 0.2 20);
-
+  
   --border: oklch(0.985 0 0 / 0.1);
   --input: oklch(0.985 0 0 / 0.1);
   --ring: oklch(0.6 0.2 310);
-
+  
   --chart-1: oklch(0.6 0.2 310);
   --chart-2: oklch(0.6 0.2 180);
   --chart-3: oklch(0.6 0.2 260);
   --chart-4: oklch(0.8 0.2 310);
   --chart-5: oklch(0.8 0.2 180);
-
+  
   --sidebar: oklch(0.1 0.05 260);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.6 0.2 310);
@@ -151,6 +152,15 @@
   box-shadow: 0 0 10px var(--primary), inset 0 0 10px var(--primary);
 }
 
+/* Light mode neon effect - more subtle */
+:not(.dark) .neon-text {
+  text-shadow: 0 0 10px var(--primary), 0 0 60px var(--primary);
+}
+
+:not(.dark) .neon-border {
+  box-shadow: 0 0 15px var(--primary), inset 0 0 15px var(--primary);
+}
+
 /* Hide Scrollbar Utilities */
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -185,4 +195,17 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+/* Light mode specific adjustments */
+:not(.dark) .light-bg-overlay {
+  background-color: oklch(0.95 0.005 250);
+}
+
+:not(.dark) .light-text-overlay {
+  color: oklch(0.50 0.01 250);
+}
+
+:not(.dark) .light-border-overlay {
+  border-color: oklch(0.90 0.01 250);
 }

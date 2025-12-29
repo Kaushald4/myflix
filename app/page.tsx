@@ -97,7 +97,7 @@ function ContentRow({ title, type, limit = 10, onPlay }: ContentRowProps) {
         {showLeftArrow && (
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-0 bottom-0 z-20 bg-black/50 hover:bg-black/80 px-2 flex items-center justify-center transition-all opacity-0 group-hover/row:opacity-100"
+            className="absolute left-0 top-0 bottom-0 z-20 bg-black/50 dark:bg-black/50 hover:bg-black/80 dark:hover:bg-black/80 px-2 flex items-center justify-center transition-all opacity-0 group-hover/row:opacity-100"
           >
             <ChevronLeft className="w-8 h-8 text-foreground" />
           </button>
@@ -123,7 +123,7 @@ function ContentRow({ title, type, limit = 10, onPlay }: ContentRowProps) {
                   sizes="(max-width: 768px) 140px, (max-width: 1200px) 180px, 200px"
                 />
                 {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                <div className="absolute inset-0 bg-black/60 dark:bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                   <div className="flex gap-2 mb-2">
                     <button
                       onClick={(e) => {
@@ -135,7 +135,7 @@ function ContentRow({ title, type, limit = 10, onPlay }: ContentRowProps) {
                       <Play className="w-4 h-4 fill-current" />
                     </button>
                     <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-                      <Plus className="w-4 h-4 text-white" />
+                      <Plus className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
@@ -162,7 +162,7 @@ function ContentRow({ title, type, limit = 10, onPlay }: ContentRowProps) {
         {showRightArrow && (
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-0 bottom-0 z-20 bg-black/50 hover:bg-black/80 px-2 flex items-center justify-center transition-all opacity-0 group-hover/row:opacity-100"
+            className="absolute right-0 top-0 bottom-0 z-20 bg-black/50 dark:bg-black/50 hover:bg-black/80 dark:hover:bg-black/80 px-2 flex items-center justify-center transition-all opacity-0 group-hover/row:opacity-100"
           >
             <ChevronRight className="w-8 h-8 text-foreground" />
           </button>
@@ -255,7 +255,7 @@ function HeroBanner({ onPlay }: HeroBannerProps) {
                 <Badge
                   key={g}
                   variant="secondary"
-                  className="bg-white/20 text-foreground border-white/10"
+                  className="bg-white/20 dark:bg-white/20 text-foreground border-white/10 dark:border-white/10"
                 >
                   {g}
                 </Badge>
@@ -280,7 +280,7 @@ function HeroBanner({ onPlay }: HeroBannerProps) {
             <Button
               size="lg"
               variant="secondary"
-              className="bg-white/10 text-foreground hover:bg-white/20 px-8 py-6 text-lg font-semibold rounded-md backdrop-blur-sm border border-white/20"
+              className="bg-white/10 dark:bg-white/10 text-foreground hover:bg-white/20 dark:hover:bg-white/20 px-8 py-6 text-lg font-semibold rounded-md backdrop-blur-sm border border-white/20 dark:border-white/20"
             >
               <Info className="mr-2 w-5 h-5" />
               More Info
@@ -382,14 +382,14 @@ export default function Home() {
                         </div>
                       )}
                       {/* Progress Bar */}
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 dark:bg-black/50">
                         <div
-                          className="h-full bg-red-600"
+                          className="h-full bg-red-600 dark:bg-red-600"
                           style={{ width: `${progressPercentage}%` }}
                         />
                       </div>
                       {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center">
                         <Button
                           size="icon"
                           className="rounded-full bg-primary text-primary-foreground hover:bg-primary/80"

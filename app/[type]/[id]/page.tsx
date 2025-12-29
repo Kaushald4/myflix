@@ -191,7 +191,7 @@ export default function DetailsPage() {
                 ))}
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white neon-text">
+              <h1 className="text-4xl md:text-6xl font-black tracking-tight  neon-text">
                 {meta.name}
               </h1>
 

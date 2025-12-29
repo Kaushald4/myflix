@@ -8,6 +8,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
 import QueryProvider from "@/provider/QueryProvider";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 pt-16 md:pb-0 md:pt-20`}
       >
@@ -41,13 +42,15 @@ export default function RootLayout({
         ></script>
         <Script src="/playerjs.js" strategy="afterInteractive" />
         <QueryProvider>
-          <AuthProvider>
-            <Navbar />
-            {children}
-            <Footer />
-            <BottomNav />
-            <Toaster />
-          </AuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <AuthProvider>
+              <Navbar />
+              {children}
+              <Footer />
+              <BottomNav />
+              <Toaster />
+            </AuthProvider>
+          </ThemeProvider>
         </QueryProvider>
       </body>
     </html>

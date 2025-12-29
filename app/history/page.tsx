@@ -89,14 +89,14 @@ export default function HistoryPage() {
             <Button
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
-              className="border-white/20 hover:bg-white/10"
+              className="border-white/20 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/10"
             >
               <Upload className="w-4 h-4 mr-2" /> Import
             </Button>
             <Button
               variant="outline"
               onClick={handleExport}
-              className="border-white/20 hover:bg-white/10"
+              className="border-white/20 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/10"
             >
               <Download className="w-4 h-4 mr-2" /> Export
             </Button>
@@ -106,7 +106,7 @@ export default function HistoryPage() {
         {/* Content */}
         {historyItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-card/30 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-card/30 dark:bg-card/30 flex items-center justify-center mb-4">
               <Clock className="w-8 h-8 text-muted-foreground" />
             </div>
             <h2 className="text-xl font-semibold text-foreground mb-2">
@@ -133,7 +133,7 @@ export default function HistoryPage() {
 
               return (
                 <Link key={item.id} href={href} className="group/card">
-                  <div className="relative aspect-video rounded-md overflow-hidden bg-card/30">
+                  <div className="relative aspect-video rounded-md overflow-hidden bg-card/30 dark:bg-card/30">
                     {item.poster ? (
                       <Image
                         src={item.poster}
@@ -142,19 +142,19 @@ export default function HistoryPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-card/30 flex items-center justify-center">
+                      <div className="w-full h-full bg-card/30 dark:bg-card/30 flex items-center justify-center">
                         <Play className="w-8 h-8 opacity-20" />
                       </div>
                     )}
                     {/* Progress Bar */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 dark:bg-black/50">
                       <div
-                        className="h-full bg-red-600"
+                        className="h-full bg-red-600 dark:bg-red-600"
                         style={{ width: `${progressPercentage}%` }}
                       />
                     </div>
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-black/40 dark:bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button
                         size="icon"
                         className="rounded-full bg-primary text-primary-foreground hover:bg-primary/80"

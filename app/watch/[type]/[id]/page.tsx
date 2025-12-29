@@ -73,16 +73,16 @@ export default async function WatchPage({
     episodeInfo?.overview || episodeInfo?.description || "";
 
   return (
-    <div className="min-h-screen bg-[#000000]">
+    <div className="min-h-screen bg-background">
       {/* Player Section */}
       <div className="relative w-full bg-black">
         {/* Navigation Bar */}
-        <div className="absolute top-0 left-0 right-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
+        <div className="absolute top-0 left-0 right-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 dark:from-black/80 to-transparent">
           <Link href={`/${type}/${id}`}>
             <Button
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/10 gap-2"
+              className="text-white dark:text-white hover:bg-white/10 dark:hover:bg-white/10 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -92,7 +92,7 @@ export default async function WatchPage({
             <Button
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/10"
+              className="text-white dark:text-white hover:bg-white/10 dark:hover:bg-white/10"
             >
               <Info className="w-4 h-4" />
             </Button>
@@ -109,19 +109,19 @@ export default async function WatchPage({
               meta={metaInfo}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-white">
+            <div className="w-full h-full flex flex-col items-center justify-center text-white dark:text-white">
               <div className="w-16 h-16 rounded-full bg-red-600/20 flex items-center justify-center mb-4">
                 <Info className="w-8 h-8 text-red-500" />
               </div>
               <h1 className="text-2xl font-bold mb-2">Stream not available</h1>
-              <p className="text-gray-400 text-center max-w-md">
+              <p className="text-gray-400 dark:text-gray-400 text-center max-w-md">
                 Could not find a stream for this content. Please try again later
                 or select a different episode.
               </p>
               <Link href={`/${type}/${id}`} className="mt-6">
                 <Button
                   variant="outline"
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-white/20 dark:border-white/20 text-white dark:text-white hover:bg-white/10 dark:hover:bg-white/10"
                 >
                   Back to Details
                 </Button>
@@ -146,12 +146,12 @@ export default async function WatchPage({
 
           {/* Info */}
           <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
               {metaInfo.title}
             </h1>
 
             {type === "series" && (
-              <p className="text-lg text-gray-300 mb-4">
+              <p className="text-lg text-muted-foreground mb-4">
                 S{season} E{episode} • {episodeTitle}
               </p>
             )}
@@ -165,13 +165,15 @@ export default async function WatchPage({
                 </div>
               )}
               {metaInfo.year && (
-                <span className="text-gray-400">{metaInfo.year}</span>
+                <span className="text-muted-foreground">{metaInfo.year}</span>
               )}
               {metaInfo.runtime && type === "movie" && (
-                <span className="text-gray-400">{metaInfo.runtime}</span>
+                <span className="text-muted-foreground">
+                  {metaInfo.runtime}
+                </span>
               )}
               {episodeInfo?.released && type === "series" && (
-                <span className="text-gray-400">
+                <span className="text-muted-foreground">
                   {new Date(episodeInfo.released).toLocaleDateString()}
                 </span>
               )}
@@ -179,7 +181,7 @@ export default async function WatchPage({
                 <Badge
                   key={g}
                   variant="secondary"
-                  className="bg-white/10 text-white border-white/10 text-xs"
+                  className="bg-white/10 dark:bg-white/10 text-foreground border-white/10 dark:border-white/10 text-xs"
                 >
                   {g}
                 </Badge>
@@ -187,7 +189,7 @@ export default async function WatchPage({
             </div>
 
             {/* Description */}
-            <p className="text-gray-300 text-sm md:text-base line-clamp-3 mb-4">
+            <p className="text-muted-foreground text-sm md:text-base line-clamp-3 mb-4">
               {type === "series" && episodeDescription
                 ? episodeDescription
                 : metaInfo.description}
@@ -198,7 +200,7 @@ export default async function WatchPage({
               <Link href={`/${type}/${id}`}>
                 <Button
                   variant="outline"
-                  className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+                  className="border-white/20 dark:border-white/20 bg-white/5 dark:bg-white/5 text-foreground hover:bg-white/10 dark:hover:bg-white/10"
                 >
                   <Info className="w-4 h-4 mr-2" />
                   More Info
@@ -211,8 +213,8 @@ export default async function WatchPage({
 
       {/* Episodes Section for Series */}
       {type === "series" && meta?.videos && meta.videos.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 border-t border-white/10">
-          <h2 className="text-xl font-bold text-white mb-4">Episodes</h2>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 border-t border-white/10 dark:border-white/10">
+          <h2 className="text-xl font-bold text-foreground mb-4">Episodes</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {meta.videos
               .filter((v) => v.season === parseInt(season))
@@ -228,12 +230,12 @@ export default async function WatchPage({
                     href={href}
                     className={`flex gap-3 p-3 rounded-lg transition-colors ${
                       isCurrentEpisode
-                        ? "bg-white/10 border border-white/20"
-                        : "bg-white/5 hover:bg-white/10 border border-transparent"
+                        ? "bg-white/10 dark:bg-white/10 border border-white/20 dark:border-white/20"
+                        : "bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 border border-transparent"
                     }`}
                   >
                     {/* Thumbnail */}
-                    <div className="relative w-24 aspect-video rounded overflow-hidden bg-black/50 shrink-0">
+                    <div className="relative w-24 aspect-video rounded overflow-hidden bg-black/50 dark:bg-black/50 shrink-0">
                       {ep.thumbnail ? (
                         <Image
                           src={ep.thumbnail}
@@ -242,13 +244,13 @@ export default async function WatchPage({
                           className="object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-600">
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                           <span className="text-xs">{ep.episode}</span>
                         </div>
                       )}
                       {isCurrentEpisode && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/50 dark:bg-black/50 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-white/20 dark:bg-white/20 flex items-center justify-center">
                             <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
                           </div>
                         </div>
@@ -258,15 +260,15 @@ export default async function WatchPage({
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-semibold text-white">
+                        <span className="text-sm font-semibold text-foreground">
                           {ep.episode}.
                         </span>
-                        <span className="text-sm text-gray-300 truncate">
+                        <span className="text-sm text-muted-foreground truncate">
                           {ep.name || `Episode ${ep.episode}`}
                         </span>
                       </div>
                       {ep.released && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {new Date(ep.released).toLocaleDateString()}
                         </p>
                       )}

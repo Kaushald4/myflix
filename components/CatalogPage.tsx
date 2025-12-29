@@ -101,7 +101,7 @@ function CatalogContent({ type, title }: CatalogPageProps) {
               placeholder={`Search ${title.toLowerCase()}...`}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="w-full pl-10 py-2 bg-card/30 border-white/10 focus:border-primary/50 focus:ring-primary/20 transition-all"
+              className="w-full pl-10 py-2 bg-card/30 dark:bg-card/30 border-white/10 dark:border-white/10 focus:border-primary/50 focus:ring-primary/20 transition-all"
             />
           </div>
         </div>
@@ -117,7 +117,7 @@ function CatalogContent({ type, title }: CatalogPageProps) {
                 "rounded-full transition-all duration-300",
                 !genre
                   ? "bg-primary text-primary-foreground hover:bg-primary/80"
-                  : "bg-card/30 text-foreground border-white/10 hover:bg-card/50"
+                  : "bg-card/30 dark:bg-card/30 text-foreground border-white/10 dark:border-white/10 hover:bg-card/50 dark:hover:bg-card/50"
               )}
             >
               All
@@ -132,7 +132,7 @@ function CatalogContent({ type, title }: CatalogPageProps) {
                   "rounded-full transition-all duration-300 whitespace-nowrap",
                   genre === g
                     ? "bg-primary text-primary-foreground hover:bg-primary/80"
-                    : "bg-card/30 text-foreground border-white/10 hover:bg-card/50"
+                    : "bg-card/30 dark:bg-card/30 text-foreground border-white/10 dark:border-white/10 hover:bg-card/50 dark:hover:bg-card/50"
                 )}
               >
                 {g}
@@ -160,7 +160,7 @@ function CatalogContent({ type, title }: CatalogPageProps) {
             <Button
               variant="outline"
               onClick={() => handleGenreChange(null)}
-              className="border-white/20 hover:bg-white/10"
+              className="border-white/20 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/10"
             >
               View All {title}
             </Button>

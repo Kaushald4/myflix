@@ -22,7 +22,7 @@ export default function WatchlistPage() {
         {/* Content */}
         {watchlist.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-card/30 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-card/30 dark:bg-card/30 flex items-center justify-center mb-4">
               <svg
                 className="w-8 h-8 text-muted-foreground"
                 fill="none"

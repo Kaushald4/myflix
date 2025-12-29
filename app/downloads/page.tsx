@@ -129,7 +129,7 @@ ${tsUrl}
         </div>
 
         {/* Alert */}
-        <Alert className="mb-8 bg-blue-500/10 border-blue-500/20 text-blue-200">
+        <Alert className="mb-8 bg-blue-500/10 dark:bg-blue-500/10 border-blue-500/20 dark:border-blue-500/20 text-blue-200 dark:text-blue-200">
           <Info className="h-4 w-4" />
           <AlertTitle>Storage Tip</AlertTitle>
           <AlertDescription>
@@ -147,7 +147,7 @@ ${tsUrl}
           </div>
         ) : downloads.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-card/30 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-card/30 dark:bg-card/30 flex items-center justify-center mb-4">
               <HardDrive className="w-8 h-8 text-muted-foreground" />
             </div>
             <h2 className="text-xl font-semibold text-foreground mb-2">
@@ -162,11 +162,11 @@ ${tsUrl}
             {downloads.map((item) => (
               <div
                 key={item.id}
-                className="bg-card/30 border border-white/10 rounded-md overflow-hidden group hover:border-primary/50 transition-colors"
+                className="bg-card/30 dark:bg-card/30 border border-white/10 dark:border-white/10 rounded-md overflow-hidden group hover:border-primary/50 transition-colors"
               >
-                <div className="aspect-video bg-black/50 relative flex items-center justify-center">
-                  <Play className="w-12 h-12 text-white/50 group-hover:text-primary transition-colors" />
-                  <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white">
+                <div className="aspect-video bg-black/50 dark:bg-black/50 relative flex items-center justify-center">
+                  <Play className="w-12 h-12 text-white/50 dark:text-white/50 group-hover:text-primary transition-colors" />
+                  <div className="absolute bottom-2 right-2 bg-black/80 dark:bg-black/80 px-2 py-1 rounded text-xs text-white">
                     {item.quality}
                   </div>
                 </div>
@@ -185,7 +185,7 @@ ${tsUrl}
                           <Play className="w-4 h-4 mr-2" /> Play
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-4xl bg-black border-white/10 p-0 overflow-hidden aspect-video">
+                      <DialogContent className="max-w-4xl bg-black dark:bg-black border-white/10 dark:border-white/10 p-0 overflow-hidden aspect-video">
                         <Player
                           id={`player-${item.id}`}
                           file={getPlayableUrl(item)}
@@ -200,7 +200,7 @@ ${tsUrl}
                       size="icon"
                       onClick={() => saveToDevice(item)}
                       title="Save to Device"
-                      className="border-white/20 hover:bg-white/10"
+                      className="border-white/20 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/10"
                     >
                       <Download className="w-4 h-4" />
                     </Button>
