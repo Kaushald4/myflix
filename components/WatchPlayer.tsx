@@ -2,7 +2,7 @@
 
 import Player from "@/components/Player";
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 interface WatchPlayerProps {
   id: string;
@@ -13,6 +13,7 @@ interface WatchPlayerProps {
     type: string;
     title: string;
     poster: string;
+    background?: string;
     season?: number;
     episode?: number;
   };
@@ -21,11 +22,7 @@ interface WatchPlayerProps {
 export function WatchPlayer({ id, file, contentId, meta }: WatchPlayerProps) {
   const updateProgress = useWatchHistoryStore((state) => state.updateProgress);
   const getProgress = useWatchHistoryStore((state) => state.getProgress);
-  const [startTime, setStartTime] = useState<number | null>(null);
-
-  useEffect(() => {
-    setStartTime(getProgress(contentId));
-  }, [contentId, getProgress]);
+  const startTime = getProgress(contentId);
 
   const handleTimeUpdate = useCallback(
     (time: number) => {
@@ -33,10 +30,6 @@ export function WatchPlayer({ id, file, contentId, meta }: WatchPlayerProps) {
     },
     [contentId, updateProgress, meta]
   );
-
-  if (startTime === null) {
-    return <div className="w-full h-full bg-black" />;
-  }
 
   const playerTitle =
     meta.type === "series" && meta.season && meta.episode
