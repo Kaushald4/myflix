@@ -85,50 +85,39 @@ function CatalogContent({ type, title }: CatalogPageProps) {
   const isLoading = debouncedSearch ? isLoadingSearch : isLoadingInfinite;
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
-      {/* Ambient Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-125 h-125 bg-primary/20 rounded-full blur-[120px] animate-blob" />
-        <div className="absolute top-[20%] right-[-10%] w-100 h-100 bg-accent/20 rounded-full blur-[100px] animate-blob animation-delay-2000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-150 h-150 bg-secondary/20 rounded-full blur-[150px] animate-blob animation-delay-4000" />
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="mb-12 text-center space-y-4">
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 neon-text bg-clip-text text-transparent bg-linear-to-r from-white to-white/50 uppercase">
+    <div className="min-h-screen bg-background text-foreground pb-20 pt-20 px-4 md:px-8 lg:px-12">
+      {/* Header */}
+      <header className="mb-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground neon-text">
             {title}
           </h1>
-        </header>
 
-        {/* Search Input */}
-        <div className="max-w-md mx-auto mb-12 relative z-20">
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-linear-to-r from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
-            <div className="relative flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              <Input
-                type="text"
-                placeholder={`Search ${title.toLowerCase()}...`}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="w-full pl-12 pr-4 py-6 rounded-full bg-black/50 border-white/10 backdrop-blur-xl focus:border-primary/50 focus:ring-primary/20 transition-all duration-300 text-lg placeholder:text-muted-foreground/50"
-              />
-            </div>
+          {/* Search Input */}
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder={`Search ${title.toLowerCase()}...`}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="w-full pl-10 py-2 bg-card/30 border-white/10 focus:border-primary/50 focus:ring-primary/20 transition-all"
+            />
           </div>
         </div>
 
         {/* Genre Filter */}
-        <div className="mb-12 overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex gap-3 justify-center min-w-max px-4">
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 min-w-max">
             <Button
               variant={!genre ? "default" : "outline"}
               onClick={() => handleGenreChange(null)}
+              size="sm"
               className={cn(
                 "rounded-full transition-all duration-300",
                 !genre
-                  ? "bg-primary hover:bg-primary/80 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
-                  : "bg-background/10 backdrop-blur-md border-white/10 hover:bg-white/10 hover:border-primary/50"
+                  ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                  : "bg-card/30 text-foreground border-white/10 hover:bg-card/50"
               )}
             >
               All
@@ -138,11 +127,12 @@ function CatalogContent({ type, title }: CatalogPageProps) {
                 key={g}
                 variant={genre === g ? "default" : "outline"}
                 onClick={() => handleGenreChange(g)}
+                size="sm"
                 className={cn(
-                  "rounded-full transition-all duration-300",
+                  "rounded-full transition-all duration-300 whitespace-nowrap",
                   genre === g
-                    ? "bg-primary hover:bg-primary/80 shadow-[0_0_20px_rgba(var(--primary),0.5)]"
-                    : "bg-background/10 backdrop-blur-md border-white/10 hover:bg-white/10 hover:border-primary/50"
+                    ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                    : "bg-card/30 text-foreground border-white/10 hover:bg-card/50"
                 )}
               >
                 {g}
@@ -150,39 +140,58 @@ function CatalogContent({ type, title }: CatalogPageProps) {
             ))}
           </div>
         </div>
+      </header>
 
-        {/* Content Grid */}
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-primary" />
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
-              {movies.map((movie, index) => (
-                <div
-                  key={`${movie.id}-${index}`}
-                  className="animate-in fade-in zoom-in duration-500 slide-in-from-bottom-4"
-                  style={{ animationDelay: `${(index % 20) * 50}ms` }}
-                >
-                  <MovieCard movie={movie} />
-                </div>
-              ))}
-            </div>
-
-            {/* Infinite Scroll Loader */}
-            {!debouncedSearch && hasNextPage && (
-              <div ref={ref} className="flex justify-center py-8">
-                {isFetchingNextPage ? (
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                ) : (
-                  <div className="h-8" />
-                )}
+      {/* Content Grid */}
+      {isLoading ? (
+        <div className="flex justify-center py-20">
+          <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        </div>
+      ) : movies.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <p className="text-muted-foreground text-lg mb-4">
+            {debouncedSearch
+              ? `No results found for "${debouncedSearch}"`
+              : genre
+              ? `No ${genre} ${title.toLowerCase()} found`
+              : `No ${title.toLowerCase()} found`}
+          </p>
+          {genre && (
+            <Button
+              variant="outline"
+              onClick={() => handleGenreChange(null)}
+              className="border-white/20 hover:bg-white/10"
+            >
+              View All {title}
+            </Button>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+            {movies.map((movie, index) => (
+              <div
+                key={`${movie.id}-${index}`}
+                className="animate-in fade-in zoom-in duration-500"
+                style={{ animationDelay: `${(index % 20) * 30}ms` }}
+              >
+                <MovieCard movie={movie} />
               </div>
-            )}
-          </>
-        )}
-      </div>
+            ))}
+          </div>
+
+          {/* Infinite Scroll Loader */}
+          {!debouncedSearch && hasNextPage && (
+            <div ref={ref} className="flex justify-center py-8">
+              {isFetchingNextPage ? (
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              ) : (
+                <div className="h-8" />
+              )}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -191,7 +200,7 @@ export function CatalogPage(props: CatalogPageProps) {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
         </div>
       }

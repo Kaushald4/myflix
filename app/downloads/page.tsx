@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Trash2, Download, HardDrive, Info } from "lucide-react";
+import { Play, Trash2, Download, HardDrive, Info, Loader2 } from "lucide-react";
 import Player from "@/components/Player";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -57,7 +56,6 @@ export default function DownloadsPage() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line
     void loadDownloads();
   }, [loadDownloads]);
 
@@ -102,7 +100,6 @@ export default function DownloadsPage() {
       return URL.createObjectURL(item.blob);
     }
 
-    // Wrap the TS blob in a simple m3u8 playlist to help the player
     const tsUrl = URL.createObjectURL(item.blob);
     const m3u8 = `#EXTM3U
 #EXT-X-VERSION:3
@@ -116,96 +113,108 @@ ${tsUrl}
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 pt-24 px-4 md:px-8">
+    <div className="min-h-screen bg-background text-foreground pb-20 pt-20 px-4 md:px-8 lg:px-12">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 rounded-full bg-primary/20">
-            <Download className="w-8 h-8 text-primary" />
+            <Download className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">My Downloads</h1>
+            <h1 className="text-3xl font-bold text-foreground neon-text">
+              My Downloads
+            </h1>
             <p className="text-muted-foreground">Manage your offline content</p>
           </div>
         </div>
 
+        {/* Alert */}
         <Alert className="mb-8 bg-blue-500/10 border-blue-500/20 text-blue-200">
           <Info className="h-4 w-4" />
           <AlertTitle>Storage Tip</AlertTitle>
           <AlertDescription>
-            Downloads are stored in your browser&apos;s IndexedDB. This can use
-            up significant storage and potentially slow down your browser. We
-            recommend deleting downloads from this list after you&apos;ve saved
-            them to your device to free up space.
+            Downloads are stored in your browser's IndexedDB. This can use up
+            significant storage and potentially slow down your browser. We
+            recommend deleting downloads from this list after you've saved them
+            to your device to free up space.
           </AlertDescription>
         </Alert>
 
+        {/* Content */}
         {loading ? (
-          <div className="text-center py-12">Loading...</div>
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
         ) : downloads.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground border border-dashed border-white/10 rounded-xl bg-card/20">
-            <HardDrive className="w-16 h-16 mb-4 opacity-50" />
-            <h2 className="text-xl font-semibold mb-2">No downloads yet</h2>
-            <p>Download movies and shows to watch them offline.</p>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 rounded-full bg-card/30 flex items-center justify-center mb-4">
+              <HardDrive className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              No downloads yet
+            </h2>
+            <p className="text-muted-foreground max-w-md">
+              Download movies and shows to watch them offline.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {downloads.map((item) => (
-              <Card
+              <div
                 key={item.id}
-                className="bg-card/30 border-white/10 overflow-hidden group hover:border-primary/50 transition-colors"
+                className="bg-card/30 border border-white/10 rounded-md overflow-hidden group hover:border-primary/50 transition-colors"
               >
-                <CardContent className="p-0">
-                  <div className="aspect-video bg-black/50 relative flex items-center justify-center">
-                    <Play className="w-12 h-12 text-white/50 group-hover:text-primary transition-colors" />
-                    <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white">
-                      {item.quality}
-                    </div>
+                <div className="aspect-video bg-black/50 relative flex items-center justify-center">
+                  <Play className="w-12 h-12 text-white/50 group-hover:text-primary transition-colors" />
+                  <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white">
+                    {item.quality}
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg mb-1 truncate">
-                      {item.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                      <span>{formatSize(item.size)}</span>
-                      <span>{new Date(item.date).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button className="flex-1 bg-primary hover:bg-primary/90">
-                            <Play className="w-4 h-4 mr-2" /> Play
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl bg-black border-white/10 p-0 overflow-hidden aspect-video">
-                          <Player
-                            id={`player-${item.id}`}
-                            file={getPlayableUrl(item)}
-                            isDirectFile={item.mimeType === "video/mp4"}
-                            title={item.title}
-                          />
-                        </DialogContent>
-                      </Dialog>
-
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => saveToDevice(item)}
-                        title="Save to Device"
-                      >
-                        <Download className="w-4 h-4" />
-                      </Button>
-
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => deleteDownload(item.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-foreground mb-1 line-clamp-1">
+                    {item.title}
+                  </h3>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                    <span>{formatSize(item.size)}</span>
+                    <span>{new Date(item.date).toLocaleDateString()}</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex gap-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="flex-1 bg-primary text-primary-foreground hover:bg-primary/80">
+                          <Play className="w-4 h-4 mr-2" /> Play
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl bg-black border-white/10 p-0 overflow-hidden aspect-video">
+                        <Player
+                          id={`player-${item.id}`}
+                          file={getPlayableUrl(item)}
+                          isDirectFile={item.mimeType === "video/mp4"}
+                          title={item.title}
+                        />
+                      </DialogContent>
+                    </Dialog>
+
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => saveToDevice(item)}
+                      title="Save to Device"
+                      className="border-white/20 hover:bg-white/10"
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => deleteDownload(item.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         )}
