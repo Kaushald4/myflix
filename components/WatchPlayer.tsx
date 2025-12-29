@@ -4,6 +4,7 @@ import Player from "@/components/Player";
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { useCallback, useEffect, useState } from "react";
 import { Video } from "@/lib/api";
+import { fetchSubtitles } from "@/app/actions/subtitles";
 
 interface WatchPlayerProps {
   id: string;
@@ -36,32 +37,26 @@ export function WatchPlayer({
 
   // Fetch subtitles
   useEffect(() => {
-    const fetchSubtitles = async () => {
+    const loadSubtitles = async () => {
       if (!meta.imdbId) return;
 
       try {
-        const params = new URLSearchParams({
-          imdbid: meta.imdbId,
-          type: meta.type,
-        });
+        const result = await fetchSubtitles(
+          meta.imdbId.replace("tt", ""),
+          meta.type as "movie" | "series",
+          meta.season,
+          meta.episode
+        );
 
-        if (meta.type === "series" && meta.season && meta.episode) {
-          params.append("season", meta.season.toString());
-          params.append("episode", meta.episode.toString());
-        }
-
-        const response = await fetch(`/api/subtitles?${params.toString()}`);
-        const data = await response.json();
-
-        if (data.subtitleUrl) {
-          setSubtitleUrl(data.subtitleUrl);
+        if (result.subtitleUrl) {
+          setSubtitleUrl(result.subtitleUrl);
         }
       } catch (error) {
         console.error("Error fetching subtitles:", error);
       }
     };
 
-    fetchSubtitles();
+    loadSubtitles();
   }, [meta.imdbId, meta.type, meta.season, meta.episode]);
 
   const handleTimeUpdate = useCallback(
