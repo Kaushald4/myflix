@@ -2,7 +2,8 @@
 
 import Player from "@/components/Player";
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Video } from "@/lib/api";
 
 interface WatchPlayerProps {
   id: string;
@@ -16,13 +17,52 @@ interface WatchPlayerProps {
     background?: string;
     season?: number;
     episode?: number;
+    imdbId?: string;
   };
+  videos?: Video[];
 }
 
-export function WatchPlayer({ id, file, contentId, meta }: WatchPlayerProps) {
+export function WatchPlayer({
+  id,
+  file,
+  contentId,
+  meta,
+  videos = [],
+}: WatchPlayerProps) {
   const updateProgress = useWatchHistoryStore((state) => state.updateProgress);
   const getProgress = useWatchHistoryStore((state) => state.getProgress);
   const startTime = getProgress(contentId);
+  const [subtitleUrl, setSubtitleUrl] = useState<string | null>(null);
+
+  // Fetch subtitles
+  useEffect(() => {
+    const fetchSubtitles = async () => {
+      if (!meta.imdbId) return;
+
+      try {
+        const params = new URLSearchParams({
+          imdbid: meta.imdbId,
+          type: meta.type,
+        });
+
+        if (meta.type === "series" && meta.season && meta.episode) {
+          params.append("season", meta.season.toString());
+          params.append("episode", meta.episode.toString());
+        }
+
+        const response = await fetch(`/api/subtitles?${params.toString()}`);
+        const data = await response.json();
+
+        if (data.subtitleUrl) {
+          setSubtitleUrl(data.subtitleUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching subtitles:", error);
+      }
+    };
+
+    fetchSubtitles();
+  }, [meta.imdbId, meta.type, meta.season, meta.episode]);
 
   const handleTimeUpdate = useCallback(
     (time: number) => {
@@ -43,6 +83,11 @@ export function WatchPlayer({ id, file, contentId, meta }: WatchPlayerProps) {
       onTimeUpdate={handleTimeUpdate}
       startTime={startTime}
       title={playerTitle}
+      subtitle={subtitleUrl}
+      videos={meta.type === "series" ? videos : undefined}
+      currentSeason={meta.season}
+      currentEpisode={meta.episode}
+      metaId={meta.metaId}
     />
   );
 }

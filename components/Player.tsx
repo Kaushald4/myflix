@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Video } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -18,6 +19,11 @@ interface PlayerProps {
   onTimeUpdate?: (time: number) => void;
   startTime?: number;
   title?: string;
+  subtitle?: string | null;
+  videos?: Video[];
+  currentSeason?: number;
+  currentEpisode?: number;
+  metaId?: string;
 }
 
 export default function Player({
@@ -27,6 +33,11 @@ export default function Player({
   onTimeUpdate,
   startTime = 0,
   title = "Player",
+  subtitle = null,
+  videos,
+  currentSeason,
+  currentEpisode,
+  metaId,
 }: PlayerProps) {
   useEffect(() => {
     let blobUrl: string | null = null;
@@ -39,13 +50,57 @@ export default function Player({
       playerFile = blobUrl + "#.m3u8";
     }
 
-    const config = {
+    const config: any = {
       id: id,
       file: playerFile,
       title: title,
       start: startTime,
       ratio: "16:9",
     };
+
+    if (subtitle) {
+      config.subtitle = subtitle;
+    }
+
+    // Add episodes for series
+    if (
+      videos &&
+      videos.length > 0 &&
+      currentSeason !== undefined &&
+      currentEpisode !== undefined &&
+      metaId
+    ) {
+      // Group videos by season
+      const seasonsMap = new Map<number, Video[]>();
+      videos.forEach((video) => {
+        if (!seasonsMap.has(video.season)) {
+          seasonsMap.set(video.season, []);
+        }
+        seasonsMap.get(video.season)!.push(video);
+      });
+
+      // Create Player.js format for episodes
+      const seasons: any[] = [];
+      seasonsMap.forEach((episodes, seasonNum) => {
+        const seasonEpisodes: any[] = episodes
+          .sort((a, b) => a.episode - b.episode)
+          .map((ep) => ({
+            title: ep.name || `Episode ${ep.episode}`,
+            file: `/watch/series/${metaId}?season=${ep.season}&episode=${ep.episode}`,
+            poster: ep.thumbnail || "",
+          }));
+
+        seasons.push({
+          title: `Season ${seasonNum}`,
+          file: seasonEpisodes,
+        });
+      });
+
+      if (seasons.length > 0) {
+        config.file = seasons;
+        config.title = title;
+      }
+    }
 
     let playerInstance: any = null;
 
@@ -100,7 +155,19 @@ export default function Player({
         URL.revokeObjectURL(blobUrl);
       }
     };
-  }, [id, file, isDirectFile, onTimeUpdate, startTime, title]);
+  }, [
+    id,
+    file,
+    isDirectFile,
+    onTimeUpdate,
+    startTime,
+    title,
+    subtitle,
+    videos,
+    currentSeason,
+    currentEpisode,
+    metaId,
+  ]);
 
   return <div id={id} className="w-full h-full" />;
 }

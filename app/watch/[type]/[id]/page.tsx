@@ -1,10 +1,6 @@
 import { extractStreamLink } from "@/lib/streamlib/extract";
 import { WatchPlayer } from "@/components/WatchPlayer";
-import {
-  ArrowLeft,
-  Info,
-  Star,
-} from "lucide-react";
+import { ArrowLeft, Info, Star } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { fetchMetaDetails } from "@/lib/api";
@@ -54,6 +50,7 @@ export default async function WatchPage({
     runtime: meta?.runtime || "",
     imdbRating: meta?.imdbRating || "",
     genre: meta?.genre || [],
+    imdbId: meta?.imdb_id || "",
   };
 
   const episodeInfo =
@@ -103,6 +100,8 @@ export default async function WatchPage({
               file={streamLink}
               contentId={contentId}
               meta={metaInfo}
+              videos={[]}
+              // videos={meta?.videos || []}
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-white dark:text-white">
