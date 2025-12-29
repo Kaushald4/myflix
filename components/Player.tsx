@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 declare global {
   interface Window {
@@ -44,6 +44,7 @@ export default function Player({
       file: playerFile,
       title: title,
       start: startTime,
+      ratio: "16:9",
     };
 
     let playerInstance: any = null;

@@ -3,11 +3,7 @@ import { WatchPlayer } from "@/components/WatchPlayer";
 import {
   ArrowLeft,
   Info,
-  Plus,
-  Check,
   Star,
-  Calendar,
-  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
