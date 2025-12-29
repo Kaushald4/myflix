@@ -4,7 +4,8 @@ import Player from "@/components/Player";
 import { useWatchHistoryStore } from "@/store/useWatchHistoryStore";
 import { useCallback, useEffect, useState } from "react";
 import { Video } from "@/lib/api";
-import { fetchSubtitles } from "@/app/actions/subtitles";
+import { fetchSubtitles, SubtitleResult } from "@/app/actions/subtitles";
+import axios from "axios";
 
 interface WatchPlayerProps {
   id: string;
@@ -39,7 +40,6 @@ export function WatchPlayer({
   useEffect(() => {
     const loadSubtitles = async () => {
       if (!meta.imdbId) return;
-
       try {
         const result = await fetchSubtitles(
           meta.imdbId.replace("tt", ""),

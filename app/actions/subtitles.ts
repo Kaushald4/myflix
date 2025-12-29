@@ -1,5 +1,3 @@
-"use server";
-
 import axios from "axios";
 
 export interface SubtitleResult {
@@ -102,16 +100,7 @@ export async function fetchSubtitles(
       url = `https://rest.opensubtitles.org/search/imdbid-${imdbid}/sublanguageid-${language}`;
     }
 
-    const response = await axios.get<SubtitleResult[]>(url, {
-      headers: {
-        "content-type": "application/x-www-form-urlencoded; charset=urf-8",
-        host: "rest.opensubtitles.org",
-        origin: "https://cloudnestra.com",
-        referer: "https://cloudnestra.com/",
-        "User-Agent": `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36`,
-        // "X-User-Agent": "trailers.to-UA",
-      },
-    });
+    const response = await axios.get<SubtitleResult[]>(url);
 
     if (!response.data || response.data.length === 0) {
       return {
