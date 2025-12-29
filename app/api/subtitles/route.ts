@@ -1,3 +1,4 @@
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface SubtitleResult {
@@ -99,23 +100,22 @@ export async function GET(request: NextRequest) {
     } else {
       url = `https://rest.opensubtitles.org/search/imdbid-${imdbid}/sublanguageid-${language}`;
     }
-    const response = await fetch(url, {
+    const response = await axios.get(url, {
       headers: {
         "content-type": "application/x-www-form-urlencoded; charset=urf-8",
         host: "rest.opensubtitles.org",
         origin: "https://cloudnestra.com",
         referer: "https://cloudnestra.com/",
         "User-Agent": `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36`,
-        "X-User-Agent": "trailers.to-UA",
+        // "X-User-Agent": "trailers.to-UA",
       },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error(`OpenSubtitles API error: ${response.statusText}`);
     }
 
-    const data: SubtitleResult[] = await response.json();
-
+    const data: SubtitleResult[] = response.data;
     if (!data || data.length === 0) {
       return NextResponse.json({ subtitles: [] });
     }
