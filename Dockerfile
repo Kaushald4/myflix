@@ -11,6 +11,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 ENV NODE_ENV=production
 
+ARG NEXT_PUBLIC_WEB_URL
+ENV NEXT_PUBLIC_WEB_URL=$NEXT_PUBLIC_WEB_URL
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -23,6 +26,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
+
+ARG NEXT_PUBLIC_WEB_URL
+ENV NEXT_PUBLIC_WEB_URL=$NEXT_PUBLIC_WEB_URL
 
 RUN apk add --no-cache tini
 
