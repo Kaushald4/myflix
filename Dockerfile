@@ -1,12 +1,13 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
-ENV NODE_ENV=production
+ENV NODE_ENV=development
+ENV NPM_CONFIG_PRODUCTION=false
 
 RUN apk add --no-cache libc6-compat bash
 
 COPY package*.json ./
 COPY pnpm-lock.yaml* yarn.lock* ./
-RUN sh -lc "if [ -f package-lock.json ]; then npm ci; else npm install; fi"
+RUN sh -lc "if [ -f package-lock.json ]; then npm ci --include=dev; else npm install --include=dev; fi"
 
 COPY . .
 RUN npm run build
