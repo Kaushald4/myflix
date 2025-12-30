@@ -1,16 +1,23 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS deps
 WORKDIR /app
-ENV NODE_ENV=development
-ENV NPM_CONFIG_PRODUCTION=false
-
 RUN apk add --no-cache libc6-compat bash
 
+# Install dependencies (including dev deps) so TypeScript exists for next.config.ts
 COPY package*.json ./
 COPY pnpm-lock.yaml* yarn.lock* ./
 RUN sh -lc "if [ -f package-lock.json ]; then npm ci --include=dev; else npm install --include=dev; fi"
 
+FROM node:20-alpine AS builder
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
 RUN npm run build
+
+# Strip devDependencies from node_modules for the runtime image
+RUN npm prune --omit=dev
 
 FROM node:20-alpine AS runner
 WORKDIR /app

@@ -1,5 +1,7 @@
 node_modules
 .next
+# NOTE: If your build relies on `.env` at build time, remove this ignore.
+# Prefer supplying env vars at runtime (docker run -e ...) where possible.
 .env
 .env.local
 .env.development
