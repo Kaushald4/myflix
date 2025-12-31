@@ -1,6 +1,6 @@
 # MyyFlix Web
 
-![alt text](./myyflix.png "MyyFlix")
+![alt text](./screenshots/baggedFlix.png "MyyFlix")
 
 A modern web application for streaming movies and TV series, built with Next.js. This project provides a user-friendly interface to browse, watch, and manage your favorite content with features like watchlists, watch history, and downloads.
 
